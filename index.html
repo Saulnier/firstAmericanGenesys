@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />Message.Conversation.participants[0].attributes["customerName"]
+  <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>First American | Genesys Messaging Testing</title>
   <style>
@@ -259,14 +259,26 @@ function startChat() {
 
   if (!valid) return;
 
-  // Pass customer data to Genesys as custom attributes
+  // Pass data via both methods for maximum compatibility
   Genesys('command', 'Database.set', {
     messaging: {
       customAttributes: {
-        'customerName':  name,
-        'customerPhone': phone,
-        'customerEmail': email
+        'customerName':          name,
+        'customerPhone':         phone,
+        'customerEmail':         email,
+        'context.customerName':  name,
+        'context.customerPhone': phone,
+        'context.customerEmail': email
       }
+    }
+  });
+
+  // Also set contact identity fields directly
+  Genesys('command', 'Database.set', {
+    contact: {
+      firstName: name,
+      phone:     phone,
+      email:     email
     }
   });
 
