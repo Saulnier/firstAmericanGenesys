@@ -32,9 +32,7 @@
       letter-spacing: 0.01em;
     }
 
-    .logo-text span {
-      color: #CC0000;
-    }
+    .logo-text span { color: #CC0000; }
 
     .badge {
       background: rgba(255,255,255,0.1);
@@ -50,35 +48,112 @@
     .hero {
       background: #002B5C;
       color: #ffffff;
-      padding: 56px 40px 48px;
+      padding: 48px 40px 40px;
       border-bottom: 1px solid #001e42;
     }
 
     .hero h1 {
-      font-size: 32px;
+      font-size: 30px;
       font-weight: bold;
-      margin-bottom: 12px;
+      margin-bottom: 10px;
     }
 
     .hero p {
-      font-size: 15px;
+      font-size: 14px;
       color: #a8bcd4;
-      max-width: 520px;
+      max-width: 500px;
       line-height: 1.7;
     }
 
-    .tip-bar {
-      background: #fff8e1;
-      border-left: 4px solid #CC0000;
-      margin: 40px 40px 0;
-      padding: 14px 20px;
-      border-radius: 4px;
-      font-size: 14px;
-      color: #333;
+    .form-wrap {
+      max-width: 460px;
+      margin: 48px auto 60px;
+      background: #ffffff;
+      border: 1px solid #dde3ea;
+      border-radius: 8px;
+      padding: 36px 40px;
+      box-shadow: 0 2px 16px rgba(0,0,0,0.07);
     }
 
-    .tip-bar strong {
+    .form-wrap h2 {
+      font-size: 17px;
       color: #002B5C;
+      margin-bottom: 6px;
+    }
+
+    .form-wrap .subtitle {
+      font-size: 13px;
+      color: #666;
+      margin-bottom: 28px;
+      line-height: 1.6;
+    }
+
+    .form-group { margin-bottom: 18px; }
+
+    .form-group label {
+      display: block;
+      font-size: 13px;
+      font-weight: bold;
+      color: #002B5C;
+      margin-bottom: 5px;
+    }
+
+    .form-group input {
+      width: 100%;
+      padding: 10px 14px;
+      border: 1px solid #ccd3db;
+      border-radius: 4px;
+      font-size: 14px;
+      font-family: Arial, sans-serif;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .form-group input:focus { border-color: #002B5C; }
+    .form-group input.error { border-color: #CC0000; }
+
+    .error-msg {
+      font-size: 12px;
+      color: #CC0000;
+      margin-top: 4px;
+      display: none;
+    }
+
+    .start-btn {
+      width: 100%;
+      padding: 12px;
+      background: #CC0000;
+      color: #ffffff;
+      border: none;
+      border-radius: 4px;
+      font-size: 15px;
+      font-weight: bold;
+      font-family: Arial, sans-serif;
+      cursor: pointer;
+      margin-top: 8px;
+      transition: background 0.2s;
+    }
+
+    .start-btn:hover { background: #aa0000; }
+
+    .success-msg {
+      display: none;
+      text-align: center;
+      padding: 12px 0 4px;
+    }
+
+    .success-msg .icon { font-size: 36px; margin-bottom: 12px; }
+
+    .success-msg p {
+      color: #002B5C;
+      font-size: 16px;
+      font-weight: bold;
+      margin-bottom: 6px;
+    }
+
+    .success-msg span {
+      font-size: 13px;
+      color: #666;
     }
   </style>
 </head>
@@ -91,11 +166,42 @@
 
 <div class="hero">
   <h1>Genesys Messaging Testing</h1>
-  <p>This is a pilot page for testing digital interactions via Genesys Web Messaging. Use the chat button in the bottom-right corner to begin.</p>
+  <p>This is a pilot page for testing digital interactions via Genesys Web Messaging. Please fill in your details below to get started.</p>
 </div>
 
-<div class="tip-bar">
-  <strong>Getting started:</strong> Click the chat button in the <strong>bottom-right corner</strong> of this page to open the messaging widget.
+<div class="form-wrap">
+
+  <div id="chatForm">
+    <h2>Before we begin</h2>
+    <p class="subtitle">Please enter your information below. This will be shared with the agent when your chat begins.</p>
+
+    <div class="form-group">
+      <label for="fullName">Full Name</label>
+      <input type="text" id="fullName" placeholder="Jane Smith" />
+      <div class="error-msg" id="nameError">Please enter your name.</div>
+    </div>
+
+    <div class="form-group">
+      <label for="phone">Phone Number</label>
+      <input type="tel" id="phone" placeholder="(555) 555-5555" />
+      <div class="error-msg" id="phoneError">Please enter your phone number.</div>
+    </div>
+
+    <div class="form-group">
+      <label for="email">Email Address</label>
+      <input type="email" id="email" placeholder="jane@example.com" />
+      <div class="error-msg" id="emailError">Please enter a valid email address.</div>
+    </div>
+
+    <button class="start-btn" onclick="startChat()">Start Chat</button>
+  </div>
+
+  <div class="success-msg" id="successMsg">
+    <div class="icon">💬</div>
+    <p>You're all set!</p>
+    <span>The chat widget is now open in the bottom-right corner.</span>
+  </div>
+
 </div>
 
 <script type="text/javascript" charset="utf-8">
@@ -111,6 +217,67 @@
   environment: 'prod-usw2',
   deploymentId: 'b1ab33f7-8ca3-4767-8929-4a3df7c5c2e8'
 });
+
+// Hide launcher until form is submitted
+Genesys('subscribe', 'Launcher:ready', function() {
+  Genesys('command', 'Launcher:hide');
+});
+
+function startChat() {
+  const name  = document.getElementById('fullName').value.trim();
+  const phone = document.getElementById('phone').value.trim();
+  const email = document.getElementById('email').value.trim();
+  let valid = true;
+
+  if (!name) {
+    document.getElementById('fullName').classList.add('error');
+    document.getElementById('nameError').style.display = 'block';
+    valid = false;
+  } else {
+    document.getElementById('fullName').classList.remove('error');
+    document.getElementById('nameError').style.display = 'none';
+  }
+
+  if (!phone) {
+    document.getElementById('phone').classList.add('error');
+    document.getElementById('phoneError').style.display = 'block';
+    valid = false;
+  } else {
+    document.getElementById('phone').classList.remove('error');
+    document.getElementById('phoneError').style.display = 'none';
+  }
+
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!email || !emailRegex.test(email)) {
+    document.getElementById('email').classList.add('error');
+    document.getElementById('emailError').style.display = 'block';
+    valid = false;
+  } else {
+    document.getElementById('email').classList.remove('error');
+    document.getElementById('emailError').style.display = 'none';
+  }
+
+  if (!valid) return;
+
+  // Pass customer data to Genesys as custom attributes
+  Genesys('command', 'Database.set', {
+    messaging: {
+      customAttributes: {
+        'context.customerName':  name,
+        'context.customerPhone': phone,
+        'context.customerEmail': email
+      }
+    }
+  });
+
+  // Show launcher and open widget
+  Genesys('command', 'Launcher:show');
+  Genesys('command', 'Messenger:open');
+
+  // Swap form for success message
+  document.getElementById('chatForm').style.display = 'none';
+  document.getElementById('successMsg').style.display = 'block';
+}
 </script>
 
 </body>
