@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8" />Message.Conversation.participants[0].attributes["customerName"]
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>First American | Genesys Messaging Testing</title>
   <style>
@@ -263,9 +263,9 @@ function startChat() {
   Genesys('command', 'Database.set', {
     messaging: {
       customAttributes: {
-        'context.customerName':  name,
-        'context.customerPhone': phone,
-        'context.customerEmail': email
+        'customerName':  name,
+        'customerPhone': phone,
+        'customerEmail': email
       }
     }
   });
