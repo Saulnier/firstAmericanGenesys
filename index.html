@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>First American | Genesys Messaging Testing</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f4f4;
+      color: #1a1a1a;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    header {
+      background: #002B5C;
+      padding: 18px 40px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 4px solid #CC0000;
+    }
+
+    .logo-text {
+      color: #ffffff;
+      font-size: 20px;
+      font-weight: bold;
+      letter-spacing: 0.01em;
+    }
+
+    .logo-text span {
+      color: #CC0000;
+    }
+
+    .badge {
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.25);
+      color: #ffffff;
+      font-size: 11px;
+      padding: 5px 12px;
+      border-radius: 20px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .hero {
+      background: #002B5C;
+      color: #ffffff;
+      padding: 56px 40px 48px;
+      border-bottom: 1px solid #001e42;
+    }
+
+    .hero h1 {
+      font-size: 32px;
+      font-weight: bold;
+      margin-bottom: 12px;
+    }
+
+    .hero p {
+      font-size: 15px;
+      color: #a8bcd4;
+      max-width: 520px;
+      line-height: 1.7;
+    }
+
+    .tip-bar {
+      background: #fff8e1;
+      border-left: 4px solid #CC0000;
+      margin: 40px 40px 0;
+      padding: 14px 20px;
+      border-radius: 4px;
+      font-size: 14px;
+      color: #333;
+    }
+
+    .tip-bar strong {
+      color: #002B5C;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo-text">First <span>American</span></div>
+  <div class="badge">⬤&nbsp; Test Environment</div>
+</header>
+
+<div class="hero">
+  <h1>Genesys Messaging Testing</h1>
+  <p>This is a pilot page for testing digital interactions via Genesys Web Messaging. Use the chat button in the bottom-right corner to begin.</p>
+</div>
+
+<div class="tip-bar">
+  <strong>Getting started:</strong> Click the chat button in the <strong>bottom-right corner</strong> of this page to open the messaging widget.
+</div>
+
+<script type="text/javascript" charset="utf-8">
+(function (g, e, n, es, ys) {
+  g['_genesysJs'] = e;
+  g[e] = g[e] || function () {
+    (g[e].q = g[e].q || []).push(arguments)
+  };
+  g[e].t = 1 * new Date();
+  g[e].c = es;
+  ys = document.createElement('script'); ys.async = 1; ys.src = n; ys.charset = 'utf-8'; document.head.appendChild(ys);
+})(window, 'Genesys', 'https://apps.mypurecloud.com/genesys-bootstrap/genesys.min.js', {
+  environment: 'prod',
+  deploymentId: '77ce3acc-e35d-48b0-a3c0-25ab5cbc1b27'
+});
+</script>
+
+</body>
+</html>
