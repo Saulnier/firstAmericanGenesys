@@ -1,296 +1,772 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>New American Funding | Genesys Messaging Testing</title>
-  <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>New American Funding — LO Chat Workflow</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --red:     #C8102E;
+    --red-d:   #A00D24;
+    --red-l:   #FDF0F2;
+    --navy:    #1B2A4A;
+    --navy-l:  #243659;
+    --white:   #FFFFFF;
+    --gray-1:  #1A1F2B;
+    --gray-2:  #3D4657;
+    --gray-3:  #6B7590;
+    --gray-4:  #B8C0D0;
+    --gray-5:  #E8ECF2;
+    --gray-6:  #F4F6FA;
+    --green:   #1A7A4A;
+    --green-l: #EAF4EE;
+    --amber:   #8A5C00;
+    --amber-l: #FEF8EC;
+    --radius:  10px;
+    --shadow:  0 2px 16px rgba(27,42,74,0.10);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--gray-6);
+    color: var(--gray-1);
+    font-size: 14px;
+    line-height: 1.55;
+    min-height: 100vh;
+  }
 
-    body {
-      font-family: Arial, sans-serif;
-      background: #f4f4f4;
-      color: #1a1a1a;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-    }
+  /* ── HEADER ── */
+  .header {
+    background: var(--navy);
+    padding: 0;
+    position: sticky;
+    top: 0;
+    z-index: 200;
+    box-shadow: 0 2px 12px rgba(27,42,74,0.18);
+  }
+  .header-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 20px;
+    border-bottom: 2px solid var(--red);
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .header-brand { display: flex; align-items: center; gap: 12px; }
+  .naf-logo {
+    background: var(--red);
+    color: var(--white);
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+    padding: 6px 10px;
+    border-radius: 5px;
+    line-height: 1.2;
+    text-align: center;
+  }
+  .header-title { color: var(--white); font-size: 0.95rem; font-weight: 700; letter-spacing: -0.2px; }
+  .header-sub   { color: rgba(255,255,255,0.5); font-size: 0.68rem; margin-top: 1px; }
+  .header-meta  { color: rgba(255,255,255,0.45); font-size: 0.7rem; text-align: right; line-height: 1.7; }
 
-    header {
-      background: #002B5C;
-      padding: 18px 40px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      border-bottom: 4px solid #CC0000;
-    }
+  /* progress strip */
+  .progress-strip {
+    padding: 8px 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .progress-track {
+    flex: 1;
+    height: 4px;
+    background: rgba(255,255,255,0.15);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    background: var(--red);
+    border-radius: 2px;
+    transition: width 0.4s ease;
+  }
+  .progress-label {
+    color: rgba(255,255,255,0.5);
+    font-size: 0.68rem;
+    font-weight: 600;
+    white-space: nowrap;
+  }
 
-    .logo-text {
-      color: #ffffff;
-      font-size: 20px;
-      font-weight: bold;
-      letter-spacing: 0.01em;
-    }
+  /* ── MAIN WRAP ── */
+  .wrap {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 20px 16px 60px;
+  }
 
-    .logo-text span { color: #CC0000; }
+  /* ── LOAN OFFICER BAR ── */
+  .lo-bar {
+    background: var(--white);
+    border: 1px solid var(--gray-5);
+    border-radius: var(--radius);
+    padding: 12px 18px;
+    margin-bottom: 16px;
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    flex-wrap: wrap;
+    box-shadow: var(--shadow);
+  }
+  .lo-bar input {
+    border: 1.5px solid var(--gray-5);
+    border-radius: 6px;
+    padding: 7px 11px;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.82rem;
+    color: var(--gray-1);
+    outline: none;
+    transition: border-color 0.15s;
+  }
+  .lo-bar input:focus { border-color: var(--navy); }
+  .lo-bar input::placeholder { color: var(--gray-4); }
+  .lo-bar label { font-size: 0.65rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.6px; color: var(--gray-3); margin-bottom: 3px; display: block; }
+  .lo-field { display: flex; flex-direction: column; }
 
-    .badge {
-      background: rgba(255,255,255,0.1);
-      border: 1px solid rgba(255,255,255,0.25);
-      color: #ffffff;
-      font-size: 11px;
-      padding: 5px 12px;
-      border-radius: 20px;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-    }
+  /* ── STEP CARD ── */
+  .step-card {
+    background: var(--white);
+    border: 1.5px solid var(--gray-5);
+    border-radius: var(--radius);
+    margin-bottom: 8px;
+    overflow: hidden;
+    box-shadow: 0 1px 6px rgba(27,42,74,0.06);
+    transition: border-color 0.2s, box-shadow 0.2s;
+    cursor: pointer;
+  }
+  .step-card.done {
+    border-color: var(--green);
+    background: #FAFFFE;
+    opacity: 0.82;
+  }
+  .step-card.active {
+    border-color: var(--red);
+    box-shadow: 0 4px 20px rgba(200,16,46,0.12);
+    cursor: default;
+  }
+  .step-card.skipped {
+    opacity: 0.55;
+  }
 
-    .hero {
-      background: #002B5C;
-      color: #ffffff;
-      padding: 48px 40px 40px;
-      border-bottom: 1px solid #001e42;
-    }
+  /* ── STEP HEADER ── */
+  .step-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 13px 16px;
+    user-select: none;
+  }
+  .step-num {
+    width: 26px; height: 26px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.68rem; font-weight: 700;
+    flex-shrink: 0;
+    background: var(--gray-5);
+    color: var(--gray-3);
+    transition: all 0.2s;
+  }
+  .step-card.active .step-num {
+    background: var(--red); color: var(--white);
+  }
+  .step-card.done .step-num {
+    background: var(--green); color: var(--white);
+  }
+  .step-name {
+    flex: 1;
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--gray-2);
+    transition: all 0.2s;
+  }
+  .step-card.active .step-name {
+    font-weight: 700;
+    color: var(--gray-1);
+    font-size: 0.9rem;
+  }
+  .step-card.done .step-name {
+    color: var(--green);
+    text-decoration: line-through;
+    text-decoration-color: rgba(26,122,74,0.4);
+  }
+  .step-status {
+    font-size: 0.68rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--gray-4);
+    flex-shrink: 0;
+  }
+  .step-card.active .step-status { color: var(--red); }
+  .step-card.done   .step-status { color: var(--green); }
+  .step-chevron {
+    font-size: 0.7rem;
+    color: var(--gray-4);
+    transition: transform 0.2s;
+    flex-shrink: 0;
+  }
+  .step-card.active .step-chevron { transform: rotate(180deg); color: var(--red); }
 
-    .hero h1 {
-      font-size: 30px;
-      font-weight: bold;
-      margin-bottom: 10px;
-    }
+  /* ── STEP BODY ── */
+  .step-body {
+    display: none;
+    padding: 0 16px 16px;
+    border-top: 1px solid var(--gray-5);
+  }
+  .step-card.active .step-body { display: block; }
 
-    .hero p {
-      font-size: 14px;
-      color: #a8bcd4;
-      max-width: 500px;
-      line-height: 1.7;
-    }
+  /* ── SCRIPT LINES ── */
+  .script-block {
+    margin-top: 14px;
+    background: #F8F9FC;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid var(--gray-5);
+  }
+  .script-block-label {
+    font-size: 0.62rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--gray-3);
+    padding: 8px 14px 6px;
+    border-bottom: 1px solid var(--gray-5);
+    background: var(--gray-6);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .copy-all-btn {
+    font-size: 0.65rem;
+    font-weight: 600;
+    color: var(--red);
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-family: 'Inter', sans-serif;
+    padding: 0;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .copy-all-btn:hover { text-decoration: underline; }
 
-    .form-wrap {
-      max-width: 460px;
-      margin: 48px auto 60px;
-      background: #ffffff;
-      border: 1px solid #dde3ea;
-      border-radius: 8px;
-      padding: 36px 40px;
-      box-shadow: 0 2px 16px rgba(0,0,0,0.07);
-    }
+  .script-line {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 9px 14px;
+    border-bottom: 1px solid var(--gray-5);
+    transition: background 0.12s;
+    cursor: pointer;
+  }
+  .script-line:last-child { border-bottom: none; }
+  .script-line:hover { background: #EEF1F8; }
+  .script-line:hover .copy-hint { opacity: 1; }
+  .script-text {
+    flex: 1;
+    font-size: 0.86rem;
+    color: var(--gray-1);
+    line-height: 1.55;
+  }
+  .copy-hint {
+    font-size: 0.62rem;
+    font-weight: 600;
+    color: var(--red);
+    opacity: 0;
+    transition: opacity 0.15s;
+    white-space: nowrap;
+    margin-top: 2px;
+    flex-shrink: 0;
+  }
 
-    .form-wrap h2 {
-      font-size: 17px;
-      color: #002B5C;
-      margin-bottom: 6px;
-    }
+  /* ── STEP ACTIONS ── */
+  .step-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 16px;
+    flex-wrap: wrap;
+  }
+  .btn {
+    padding: 9px 18px; border-radius: 6px; border: none;
+    font-size: 0.8rem; font-weight: 600;
+    cursor: pointer; transition: all 0.15s;
+    font-family: 'Inter', sans-serif;
+  }
+  .btn-red   { background: var(--red); color: var(--white); }
+  .btn-red:hover { background: var(--red-d); }
+  .btn-ghost { background: var(--white); border: 1.5px solid var(--gray-4); color: var(--gray-2); }
+  .btn-ghost:hover { border-color: var(--navy); color: var(--navy); }
+  .btn-green  { background: var(--green-l); color: var(--green); border: 1.5px solid rgba(26,122,74,0.2); }
+  .btn-green:hover { background: var(--green); color: var(--white); }
 
-    .form-wrap .subtitle {
-      font-size: 13px;
-      color: #666;
-      margin-bottom: 28px;
-      line-height: 1.6;
-    }
+  /* ── TOAST ── */
+  .toast-container { position: fixed; bottom: 20px; right: 20px; z-index: 999; }
+  .toast {
+    background: var(--navy); color: var(--white);
+    padding: 9px 16px; border-radius: 6px;
+    font-size: 0.8rem; font-weight: 500;
+    margin-top: 8px; opacity: 0;
+    transform: translateY(6px);
+    transition: all 0.2s; max-width: 280px;
+    box-shadow: var(--shadow);
+    border-left: 3px solid var(--red);
+  }
+  .toast.show { opacity: 1; transform: translateY(0); }
 
-    .form-group { margin-bottom: 18px; }
+  /* ── RESET BAR ── */
+  .reset-bar {
+    text-align: center;
+    margin-top: 24px;
+  }
+  .reset-bar button {
+    background: none; border: none; cursor: pointer;
+    font-size: 0.75rem; color: var(--gray-3);
+    font-family: 'Inter', sans-serif;
+    text-decoration: underline;
+  }
+  .reset-bar button:hover { color: var(--red); }
 
-    .form-group label {
-      display: block;
-      font-size: 13px;
-      font-weight: bold;
-      color: #002B5C;
-      margin-bottom: 5px;
-    }
-
-    .form-group input {
-      width: 100%;
-      padding: 10px 14px;
-      border: 1px solid #ccd3db;
-      border-radius: 4px;
-      font-size: 14px;
-      font-family: Arial, sans-serif;
-      outline: none;
-      transition: border-color 0.2s;
-    }
-
-    .form-group input:focus { border-color: #002B5C; }
-    .form-group input.error { border-color: #CC0000; }
-
-    .error-msg {
-      font-size: 12px;
-      color: #CC0000;
-      margin-top: 4px;
-      display: none;
-    }
-
-    .start-btn {
-      width: 100%;
-      padding: 12px;
-      background: #CC0000;
-      color: #ffffff;
-      border: none;
-      border-radius: 4px;
-      font-size: 15px;
-      font-weight: bold;
-      font-family: Arial, sans-serif;
-      cursor: pointer;
-      margin-top: 8px;
-      transition: background 0.2s;
-    }
-
-    .start-btn:hover { background: #aa0000; }
-
-    .success-msg {
-      display: none;
-      text-align: center;
-      padding: 12px 0 4px;
-    }
-
-    .success-msg .icon { font-size: 36px; margin-bottom: 12px; }
-
-    .success-msg p {
-      color: #002B5C;
-      font-size: 16px;
-      font-weight: bold;
-      margin-bottom: 6px;
-    }
-
-    .success-msg span {
-      font-size: 13px;
-      color: #666;
-    }
-  </style>
+  /* ── COMPLETE STATE ── */
+  .complete-banner {
+    background: var(--green-l);
+    border: 1.5px solid var(--green);
+    border-radius: var(--radius);
+    padding: 20px 24px;
+    text-align: center;
+    margin-top: 12px;
+    display: none;
+  }
+  .complete-banner h3 { color: var(--green); font-size: 1rem; font-weight: 700; margin-bottom: 4px; }
+  .complete-banner p  { color: var(--gray-2); font-size: 0.84rem; }
+</style>
 </head>
 <body>
 
-<header>
-  <div class="logo-text">New American <span>Funding</span></div>
-  <div class="badge">⬤&nbsp; Test Environment</div>
-</header>
+<div class="toast-container" id="toastCont"></div>
 
-<div class="hero">
-  <h1>Genesys Messaging Testing</h1>
-  <p>This is a pilot page for testing digital interactions via Genesys Web Messaging. Please fill in your details below to get started.</p>
+<!-- HEADER -->
+<div class="header">
+  <div class="header-top">
+    <div class="header-brand">
+      <div class="naf-logo">NEW<br>AMERICAN<br>FUNDING</div>
+      <div>
+        <div class="header-title">LO Chat Workflow</div>
+        <div class="header-sub">Guided Script · Chat Channel</div>
+      </div>
+    </div>
+    <div class="header-meta">
+      Loan Officer Console<br>
+      <span id="stepCounter">Step 1 of 14</span>
+    </div>
+  </div>
+  <div class="progress-strip">
+    <div class="progress-label" id="progressLabel">0% complete</div>
+    <div class="progress-track"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+    <div class="progress-label" id="stepsRemaining">14 remaining</div>
+  </div>
 </div>
 
-<div class="form-wrap">
+<div class="wrap">
 
-  <div id="chatForm">
-    <h2>Before we begin</h2>
-    <p class="subtitle">Please enter your information below. This will be shared with the agent when your chat begins.</p>
-
-    <div class="form-group">
-      <label for="fullName">Full Name</label>
-      <input type="text" id="fullName" placeholder="Jane Smith" />
-      <div class="error-msg" id="nameError">Please enter your name.</div>
+  <!-- LO + MEMBER BAR -->
+  <div class="lo-bar">
+    <div class="lo-field">
+      <label>LO Name</label>
+      <input id="loName" placeholder="Your name" style="width:140px;">
     </div>
-
-    <div class="form-group">
-      <label for="phone">Phone Number</label>
-      <input type="tel" id="phone" placeholder="(555) 555-5555" />
-      <div class="error-msg" id="phoneError">Please enter your phone number.</div>
+    <div class="lo-field">
+      <label>Member / Lead Name</label>
+      <input id="memberName" placeholder="Customer name" style="width:150px;">
     </div>
-
-    <div class="form-group">
-      <label for="email">Email Address</label>
-      <input type="email" id="email" placeholder="jane@example.com" />
-      <div class="error-msg" id="emailError">Please enter a valid email address.</div>
+    <div class="lo-field">
+      <label>State Licensed</label>
+      <input id="loState" placeholder="e.g. CA" style="width:80px;" maxlength="2">
     </div>
-
-    <button class="start-btn" onclick="startChat()">Start Chat</button>
+    <div class="lo-field">
+      <label>Target Close Date</label>
+      <input id="closeDate" placeholder="e.g. Aug 1" style="width:110px;">
+    </div>
   </div>
 
-  <div class="success-msg" id="successMsg">
-    <div class="icon">💬</div>
-    <p>You're all set!</p>
-    <span>The chat widget is now open in the bottom-right corner.</span>
+  <!-- STEPS -->
+  <div id="stepsWrap"></div>
+
+  <div class="complete-banner" id="completeBanner">
+    <h3>🎉 Conversation Complete</h3>
+    <p>All steps finished. Great work — the member's next steps have been set and follow-up is scheduled.</p>
   </div>
 
+  <div class="reset-bar">
+    <button onclick="resetAll()">↺ Reset workflow</button>
+  </div>
 </div>
 
-<script type="text/javascript" charset="utf-8">
-(function (g, e, n, es, ys) {
-  g['_genesysJs'] = e;
-  g[e] = g[e] || function () {
-    (g[e].q = g[e].q || []).push(arguments)
-  };
-  g[e].t = 1 * new Date();
-  g[e].c = es;
-  ys = document.createElement('script'); ys.async = 1; ys.src = n; ys.charset = 'utf-8'; document.head.appendChild(ys);
-})(window, 'Genesys', 'https://apps.usw2.pure.cloud/genesys-bootstrap/genesys.min.js', {
-  environment: 'prod-usw2',
-  deploymentId: 'b1ab33f7-8ca3-4767-8929-4a3df7c5c2e8'
-});
-
-// Hide launcher until form is submitted
-Genesys('subscribe', 'Launcher:ready', function() {
-  Genesys('command', 'Launcher:hide');
-});
-
-function startChat() {
-  const name  = document.getElementById('fullName').value.trim();
-  const phone = document.getElementById('phone').value.trim();
-  const email = document.getElementById('email').value.trim();
-  let valid = true;
-
-  if (!name) {
-    document.getElementById('fullName').classList.add('error');
-    document.getElementById('nameError').style.display = 'block';
-    valid = false;
-  } else {
-    document.getElementById('fullName').classList.remove('error');
-    document.getElementById('nameError').style.display = 'none';
+<script>
+// ── STEP DATA ──
+const STEPS = [
+  {
+    id: 1,
+    name: "LO Introduction",
+    lines: [
+      "Hi {member}, I'm {lo}, a loan officer with New American Funding, licensed in {state} — how are you doing today?"
+    ]
+  },
+  {
+    id: 2,
+    name: "Discovery",
+    lines: [
+      "Have you picked a property yet, or are we getting started and figuring out your budget?",
+      "Roughly what price range are you looking at, and do you have a sense of your down payment?",
+      "Do you have a payment you'd want to stay around each month?"
+    ]
+  },
+  {
+    id: 3,
+    name: "Invite Questions / Lower the Pressure",
+    lines: [
+      "Before I start filling in the blanks — what questions do you have for me?",
+      "There's a lot to learn and that's what I'm here for. Don't ever feel like you can't ask me something — today, tomorrow, or two weeks from now."
+    ]
+  },
+  {
+    id: 4,
+    name: "Frame the Process",
+    lines: [
+      "Here's the plan: we pull your credit, see where we're at, and if everything looks good we keep going on the application toward a pre-approval.",
+      "Closing usually runs about 30–45 days, so if you want to be in by {closedate} we'd start shopping around {timeframe} — we've got time."
+    ]
+  },
+  {
+    id: 5,
+    name: "Reassure on Credit (Before the Pull)",
+    lines: [
+      "Credit is one of the first things I'll look at with you — you might be surprised where you're at, so let's just take a look and go from there.",
+      "Whatever we find, we'll talk through it. Plenty of options depending on what pops up."
+    ]
+  },
+  {
+    id: 6,
+    name: "Verify Contact Info",
+    lines: [
+      "Let me confirm a couple things since I didn't type them in — is {phone} the best number, and is {email} right?"
+    ]
+  },
+  {
+    id: 7,
+    name: "Credit Pull Consent",
+    lines: [
+      "Do I have your permission to pull a copy of your credit?",
+      "This is a soft pull — we wouldn't do a hard pull until you're under contract and in processing.",
+      "Once we've pulled credit, I'll have your file started — and if we ever get disconnected, I'll call you so we don't lose momentum."
+    ]
+  },
+  {
+    id: 8,
+    name: "Deliver Credit Results (Sensitively)",
+    lines: [
+      "We got one score back — let's use that as a starting point and figure out next steps together.",
+      "None of this is a dealbreaker — here's what I'd focus on first."
+    ]
+  },
+  {
+    id: 9,
+    name: "Real Estate Agent + Incentives",
+    lines: [
+      "Are you working with a real estate agent yet? We have incentives toward your closing costs if you use one we recommend — totally optional, but worth a look since it's money toward your costs."
+    ]
+  },
+  {
+    id: 10,
+    name: "Down Payment / Program",
+    lines: [
+      "FHA runs a 3.5% down payment, and there are options to help with that — but if you can put more down on your own, it makes everything a little easier."
+    ]
+  },
+  {
+    id: 11,
+    name: "Documents In",
+    lines: [
+      "To keep things moving I'll need a couple documents — most recent pay stubs and bank statements. You can upload them right here in the chat.",
+      "No rush on the docs — send them when you have them and I'll confirm I've got everything."
+    ]
+  },
+  {
+    id: 12,
+    name: "Follow-Up Commitment (The Real LO Close)",
+    lines: [
+      "I'll put this in our system, get you rates and a payment, and email it over so you can review when you have time.",
+      "I'm sending a quick email with my contact info — my direct line is in the signature so you've got my number. I'll text you from that line too.",
+      "If anything comes up in the meantime, don't hesitate to reach out — I'll be here for you."
+    ]
+  },
+  {
+    id: 13,
+    name: "Hold / Step Away",
+    lines: [
+      "No problem — take your time. I'll keep this open on my end.",
+      "I'm helping a couple of folks at once, so I may take a minute — but you've got my full attention on your file."
+    ]
+  },
+  {
+    id: 14,
+    name: "Close / Keep in Touch",
+    lines: [
+      "Here's where we landed: [recap]. Next step is [action]. I'll follow up on {closedate}.",
+      "Great connecting — you've got my number, reach out anytime, and I'll keep things moving on my end."
+    ]
   }
+];
 
-  if (!phone) {
-    document.getElementById('phone').classList.add('error');
-    document.getElementById('phoneError').style.display = 'block';
-    valid = false;
-  } else {
-    document.getElementById('phone').classList.remove('error');
-    document.getElementById('phoneError').style.display = 'none';
-  }
-
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  if (!email || !emailRegex.test(email)) {
-    document.getElementById('email').classList.add('error');
-    document.getElementById('emailError').style.display = 'block';
-    valid = false;
-  } else {
-    document.getElementById('email').classList.remove('error');
-    document.getElementById('emailError').style.display = 'none';
-  }
-
-  if (!valid) return;
-
-  // Pass data via both methods for maximum compatibility
-  Genesys('command', 'Database.set', {
-    messaging: {
-      customAttributes: {
-        'customerName':          name,
-        'customerPhone':         phone,
-        'customerEmail':         email,
-        'context.customerName':  name,
-        'context.customerPhone': phone,
-        'context.customerEmail': email
-      }
-    }
-  });
-
-  // Also set contact identity fields directly
-  Genesys('command', 'Database.set', {
-    contact: {
-      firstName: name,
-      phone:     phone,
-      email:     email
-    }
-  });
-
-  // Show launcher and open widget
-  Genesys('command', 'Launcher:show');
-  Genesys('command', 'Messenger:open');
-
-  // Swap form for success message
-  document.getElementById('chatForm').style.display = 'none';
-  document.getElementById('successMsg').style.display = 'block';
+// ── URL PARAMS + DEFAULTS ──
+const qp = new URLSearchParams(window.location.search);
+function getQP(...keys) {
+  for (let k of keys) { const v = qp.get(k); if (v && v.trim()) return v.trim(); }
+  return "";
 }
-</script>
 
+const DEFAULTS = {
+  loName:     "Jordan",
+  memberName: "Alex",
+  loState:    "CA",
+  closeDate:  "Aug 1"
+};
+
+function initFields() {
+  const fields = {
+    loName:     getQP("loName",     "LO",         "lo_name",   "LONAME")     || DEFAULTS.loName,
+    memberName: getQP("memberName", "FNAME",       "firstName", "fname",
+                      "member",    "MEMBER",       "name",      "NAME")       || DEFAULTS.memberName,
+    loState:    getQP("loState",    "STATE",       "state",     "LO_STATE")   || DEFAULTS.loState,
+    closeDate:  getQP("closeDate",  "CLOSE_DATE",  "closedate", "DATE",
+                      "START_DATE","close")                                    || DEFAULTS.closeDate,
+  };
+  Object.entries(fields).forEach(([id, val]) => {
+    const el = document.getElementById(id);
+    if (el && val) el.value = val;
+  });
+}
+
+// ── URL STATE PERSISTENCE ──
+// Saves current step + completed steps into the URL so page reloads
+// (e.g. Genesys switching conversations) restore exactly where LO left off.
+function saveStateToURL() {
+  const params = new URLSearchParams(window.location.search);
+  params.set('_step', currentStep);
+  params.set('_done', Array.from(completedSteps).join(','));
+  history.replaceState(null, '', '?' + params.toString());
+}
+
+function restoreStateFromURL() {
+  const step = qp.get('_step');
+  const done = qp.get('_done');
+  if (step !== null && !isNaN(parseInt(step))) {
+    currentStep = parseInt(step);
+  }
+  if (done && done.trim() !== '') {
+    done.split(',').forEach(n => {
+      const i = parseInt(n);
+      if (!isNaN(i)) completedSteps.add(i);
+    });
+  }
+}
+
+let currentStep = 0; // 0-indexed active step
+let completedSteps = new Set();
+
+function getTokens() {
+  const lo     = document.getElementById('loName').value.trim()     || DEFAULTS.loName;
+  const member = document.getElementById('memberName').value.trim() || DEFAULTS.memberName;
+  const state  = document.getElementById('loState').value.trim()    || DEFAULTS.loState;
+  const close  = document.getElementById('closeDate').value.trim()  || DEFAULTS.closeDate;
+  return { lo, member, state, close };
+}
+
+function renderLine(text) {
+  const t = getTokens();
+  return text
+    .replace(/\{lo\}/gi,        t.lo)
+    .replace(/\{member\}/gi,    t.member)
+    .replace(/\{name\}/gi,      t.member)
+    .replace(/\{state\}/gi,     t.state)
+    .replace(/\{closedate\}/gi, t.close)
+    .replace(/\{timeframe\}/gi, '30–45 days');
+}
+
+function buildSteps() {
+  const wrap = document.getElementById('stepsWrap');
+  wrap.innerHTML = '';
+
+  STEPS.forEach((step, idx) => {
+    const isDone   = completedSteps.has(idx);
+    const isActive = idx === currentStep && !isDone;
+    const card = document.createElement('div');
+    card.className = 'step-card' + (isDone ? ' done' : '') + (isActive ? ' active' : '');
+    card.id = 'step-' + idx;
+
+    const statusText = isDone ? '✓ Done' : isActive ? 'In Progress' : idx < currentStep ? 'Done' : '';
+
+    // Build script lines HTML
+    const linesHTML = step.lines.map((line, li) => `
+      <div class="script-line" onclick="copyLine(this, ${idx}, ${li})">
+        <div class="script-text">${renderLine(line)}</div>
+        <div class="copy-hint">Copy ↗</div>
+      </div>
+    `).join('');
+
+    card.innerHTML = `
+      <div class="step-header" onclick="handleHeaderClick(${idx})">
+        <div class="step-num">${isDone ? '✓' : step.id}</div>
+        <div class="step-name">${step.name}</div>
+        <div class="step-status">${statusText}</div>
+        <div class="step-chevron">▼</div>
+      </div>
+      <div class="step-body">
+        <div class="script-block">
+          <div class="script-block-label">
+            <span>Suggested Script — click any line to copy</span>
+            <button class="copy-all-btn" onclick="copyAll(${idx}); event.stopPropagation();">Copy All</button>
+          </div>
+          ${linesHTML}
+        </div>
+        <div class="step-actions">
+          <button class="btn btn-red" onclick="markDone(${idx}); event.stopPropagation();">✓ Done — Next Step</button>
+          ${idx > 0 ? `<button class="btn btn-ghost" onclick="goBack(${idx}); event.stopPropagation();">← Back</button>` : ''}
+          <button class="btn btn-ghost" onclick="skipStep(${idx}); event.stopPropagation();">Skip</button>
+        </div>
+      </div>
+    `;
+
+    wrap.appendChild(card);
+  });
+
+  updateProgress();
+  scrollToActive();
+}
+
+function handleHeaderClick(idx) {
+  // If it's the active step, do nothing (already open)
+  if (idx === currentStep && !completedSteps.has(idx)) return;
+  // Otherwise re-open that step
+  currentStep = idx;
+  saveStateToURL();
+  buildSteps();
+}
+
+function markDone(idx) {
+  completedSteps.add(idx);
+  saveStateToURL();
+  // Advance to next incomplete step
+  let next = idx + 1;
+  while (next < STEPS.length && completedSteps.has(next)) next++;
+  currentStep = next < STEPS.length ? next : idx;
+  buildSteps();
+
+  if (completedSteps.size === STEPS.length) {
+    document.getElementById('completeBanner').style.display = 'block';
+  }
+}
+
+function skipStep(idx) {
+  // Mark as skipped — move forward without adding to completed
+  currentStep = Math.min(idx + 1, STEPS.length - 1);
+  saveStateToURL();
+  buildSteps();
+  showToast('Step skipped');
+}
+
+function goBack(idx) {
+  currentStep = Math.max(idx - 1, 0);
+  completedSteps.delete(idx - 1);
+  saveStateToURL();
+  buildSteps();
+}
+
+function copyLine(el, stepIdx, lineIdx) {
+  const text = renderLine(STEPS[stepIdx].lines[lineIdx]);
+  navigator.clipboard.writeText(text).then(() => {
+    const hint = el.querySelector('.copy-hint');
+    hint.textContent = 'Copied!';
+    hint.style.color = 'var(--green)';
+    setTimeout(() => { hint.textContent = 'Copy ↗'; hint.style.color = ''; }, 1800);
+    showToast('Copied to clipboard');
+  }).catch(() => {
+    // Fallback
+    const ta = document.createElement('textarea');
+    ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+    document.body.appendChild(ta); ta.focus(); ta.select();
+    document.execCommand('copy'); document.body.removeChild(ta);
+    showToast('Copied to clipboard');
+  });
+}
+
+function copyAll(stepIdx) {
+  const lines = STEPS[stepIdx].lines.map(l => renderLine(l)).join('\n\n');
+  navigator.clipboard.writeText(lines).then(() => {
+    showToast('All lines copied!');
+  }).catch(() => {
+    const ta = document.createElement('textarea');
+    ta.value = lines; ta.style.position = 'fixed'; ta.style.opacity = '0';
+    document.body.appendChild(ta); ta.focus(); ta.select();
+    document.execCommand('copy'); document.body.removeChild(ta);
+    showToast('All lines copied!');
+  });
+}
+
+function updateProgress() {
+  const done  = completedSteps.size;
+  const total = STEPS.length;
+  const pct   = Math.round((done / total) * 100);
+  document.getElementById('progressFill').style.width = pct + '%';
+  document.getElementById('progressLabel').textContent = pct + '% complete';
+  document.getElementById('stepsRemaining').textContent = (total - done) + ' remaining';
+  document.getElementById('stepCounter').textContent =
+    'Step ' + (currentStep + 1) + ' of ' + total;
+}
+
+function scrollToActive() {
+  const el = document.getElementById('step-' + currentStep);
+  if (el) {
+    setTimeout(() => {
+      el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }, 80);
+  }
+}
+
+function resetAll() {
+  completedSteps.clear();
+  currentStep = 0;
+  document.getElementById('completeBanner').style.display = 'none';
+  buildSteps();
+  showToast('Workflow reset');
+}
+
+function showToast(msg) {
+  const c = document.getElementById('toastCont');
+  const t = document.createElement('div');
+  t.className = 'toast'; t.textContent = msg;
+  c.appendChild(t);
+  requestAnimationFrame(() => requestAnimationFrame(() => t.classList.add('show')));
+  setTimeout(() => { t.classList.remove('show'); setTimeout(() => t.remove(), 250); }, 2200);
+}
+
+// Re-render on name/state changes so tokens update
+['loName','memberName','loState','closeDate'].forEach(id => {
+  document.getElementById(id).addEventListener('input', () => buildSteps());
+});
+
+// Init — populate fields from URL params or defaults, restore step state, then render
+initFields();
+restoreStateFromURL();
+buildSteps();
+</script>
 </body>
 </html>
